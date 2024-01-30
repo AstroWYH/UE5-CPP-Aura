@@ -22,19 +22,21 @@ void AAuraEffectActor::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AAuraEffectActor::ApplyEffectToTarget(AActor *Target, TSubclassOf<UGameplayEffect> GameplayEffectClass)
+void AAuraEffectActor::ApplyEffectToTarget(AActor *TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
 {
+	// GAS提供了静态函数的方式
 	// IAbilitySystemInterface* ASCInterface = Cast<IAbilitySystemInterface>(Target);
 	// if (ASCInterface)
 	// {
-	// 	ASCInterface->GetAbilitySystemComponent(); // GAS提供了静态函数的方式
+	// 	ASCInterface->GetAbilitySystemComponent();
 	// }
 
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target);
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	if (TargetASC == nullptr) return;
 
+	check(GameplayEffectClass);
 	FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
-	// TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1.f, );
-	// TargetASC->ApplyGameplayEffectSpecToSelf();
-
+	EffectContextHandle.AddSourceObject(this);
+	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1.f, EffectContextHandle);
+	TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }
-
