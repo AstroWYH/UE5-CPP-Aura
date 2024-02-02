@@ -24,7 +24,7 @@ void AAuraEffectActor::BeginPlay()
 
 void AAuraEffectActor::ApplyEffectToTarget(AActor *TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
 {
-	// GAS提供了静态函数的方式
+	// GAS提供了静态函数的公共方式
 	// IAbilitySystemInterface* ASCInterface = Cast<IAbilitySystemInterface>(Target);
 	// if (ASCInterface)
 	// {
